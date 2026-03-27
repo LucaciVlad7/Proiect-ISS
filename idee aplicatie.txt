@@ -1,0 +1,20 @@
+Gestionare a antrenamentelor - (exercitii)
+CRUD
+Iteratie1
+->sign-up
+->log-in
+->delete account
+
+Iteratie2
+-> adaugare exercitii in antrenamentul tau (exercitii din baza de date)
+-> admin (populare baza date si de astea)
+
+Iteratie3
+-> in fiecare saptamana iti vei trece greutatea cu are ai facut
+-> paralela la saptaman trecuta cu greutatile ca sa iti vezi progresul, poate si personal best
+
+Cerinte nonfunctionale:
+1. Sercuritate - parole hashed, un utilizator nu are acces la functiile de admin, protectia datelor (ex gestiunea contului)
+2. Performanta - exercitiile si antrenamentele se incarca in sub 2 sec
+3. Usability - aplicatia este optimizata pentru mobil
+4. Scalability - sistemul suporta un numar crescut de utilizatori minim 10.000(cod modular pentru scalarea usoara a aplicatiei)
