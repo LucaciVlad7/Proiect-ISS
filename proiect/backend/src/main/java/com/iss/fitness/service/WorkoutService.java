@@ -194,9 +194,25 @@ public class WorkoutService {
 
         if (request.reps() != null) {
             workoutSet.setReps(request.reps());
+            // If this set's weight is the current PB, sync the PB reps too
+            BigDecimal currentPb = workoutExercise.getPersonalBest();
+            if (workoutSet.getWeight() != null && currentPb != null
+                    && workoutSet.getWeight().compareTo(currentPb) == 0) {
+                workoutExercise.setPersonalBestReps(request.reps());
+                workoutExerciseRepository.save(workoutExercise);
+            }
         }
         if (request.weight() != null) {
             workoutSet.setWeight(request.weight());
+            BigDecimal newWeight = request.weight();
+            if (newWeight.compareTo(BigDecimal.ZERO) > 0) {
+                BigDecimal currentPb = workoutExercise.getPersonalBest();
+                if (currentPb == null || newWeight.compareTo(currentPb) > 0) {
+                    workoutExercise.setPersonalBest(newWeight);
+                    workoutExercise.setPersonalBestReps(workoutSet.getReps());
+                    workoutExerciseRepository.save(workoutExercise);
+                }
+            }
         }
         if (request.lastWeek() != null) {
             String trimmed = request.lastWeek().trim();
@@ -276,16 +292,27 @@ public class WorkoutService {
             workoutSet.getReps(),
             workoutSet.getWeight(),
             workoutSet.getLastWeek(),
+            workoutSet.getLastWeekWeight(),
+            workoutSet.getLastWeekReps(),
             workoutSet.isCompleted()
         );
     }
 
     private String formatPersonalBest(WorkoutExercise workoutExercise) {
+        if (workoutExercise.getPersonalBest() != null
+                && workoutExercise.getPersonalBest().compareTo(BigDecimal.ZERO) > 0) {
+            String weightPart = workoutExercise.getPersonalBest().stripTrailingZeros().toPlainString() + "kg";
+            Integer pbReps = workoutExercise.getPersonalBestReps();
+            return pbReps != null ? weightPart + " x " + pbReps : weightPart;
+        }
+        // Fallback for existing data without a stored PB
         return workoutExercise.getSets().stream()
-            .map(WorkoutSet::getWeight)
-            .filter(weight -> weight != null && weight.compareTo(BigDecimal.ZERO) > 0)
-            .max(BigDecimal::compareTo)
-            .map(weight -> weight.stripTrailingZeros().toPlainString() + "kg")
+            .filter(s -> s.getWeight() != null && s.getWeight().compareTo(BigDecimal.ZERO) > 0)
+            .max(java.util.Comparator.comparing(WorkoutSet::getWeight))
+            .map(s -> {
+                String weightPart = s.getWeight().stripTrailingZeros().toPlainString() + "kg";
+                return s.getReps() != null ? weightPart + " x " + s.getReps() : weightPart;
+            })
             .orElse("-");
     }
 
@@ -362,9 +389,10 @@ public class WorkoutService {
                 }
 
                 if (!marker.equals(currentWeekMarker)) {
+                    workoutSet.setLastWeekWeight(workoutSet.getWeight());
+                    workoutSet.setLastWeekReps(workoutSet.getReps());
                     workoutSet.setLastWeek(formatLastWeekValue(workoutSet));
-                    workoutSet.setWeight(null);
-                    workoutSet.setReps(null);
+                    // Keep weight and reps pre-filled from last week
                     workoutSet.setCompleted(false);
                     workoutSet.setWeekMarker(currentWeekMarker);
                     changedSets.add(workoutSet);

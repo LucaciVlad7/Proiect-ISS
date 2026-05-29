@@ -8,6 +8,8 @@ public record WorkoutSetResponse(
     Integer reps,
     BigDecimal weight,
     String lastWeek,
+    BigDecimal lastWeekWeight,
+    Integer lastWeekReps,
     boolean completed
 ) {
 }

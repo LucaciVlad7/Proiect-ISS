@@ -36,6 +36,12 @@ public class WorkoutSet {
     @Column(nullable = false, length = 80)
     private String lastWeek;
 
+    @Column(name = "last_week_weight", precision = 7, scale = 2)
+    private BigDecimal lastWeekWeight;
+
+    @Column(name = "last_week_reps")
+    private Integer lastWeekReps;
+
     @Column(name = "week_marker")
     private Integer weekMarker;
 
@@ -88,6 +94,22 @@ public class WorkoutSet {
 
     public void setLastWeek(String lastWeek) {
         this.lastWeek = lastWeek;
+    }
+
+    public BigDecimal getLastWeekWeight() {
+        return lastWeekWeight;
+    }
+
+    public void setLastWeekWeight(BigDecimal lastWeekWeight) {
+        this.lastWeekWeight = lastWeekWeight;
+    }
+
+    public Integer getLastWeekReps() {
+        return lastWeekReps;
+    }
+
+    public void setLastWeekReps(Integer lastWeekReps) {
+        this.lastWeekReps = lastWeekReps;
     }
 
     public Integer getWeekMarker() {

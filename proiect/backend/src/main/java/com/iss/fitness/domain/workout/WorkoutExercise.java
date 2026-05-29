@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -36,6 +37,12 @@ public class WorkoutExercise {
 
     @Column(nullable = false)
     private int position;
+
+    @Column(name = "personal_best", precision = 7, scale = 2)
+    private BigDecimal personalBest;
+
+    @Column(name = "personal_best_reps")
+    private Integer personalBestReps;
 
     @OneToMany(mappedBy = "workoutExercise", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("position ASC")
@@ -71,6 +78,22 @@ public class WorkoutExercise {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public BigDecimal getPersonalBest() {
+        return personalBest;
+    }
+
+    public void setPersonalBest(BigDecimal personalBest) {
+        this.personalBest = personalBest;
+    }
+
+    public Integer getPersonalBestReps() {
+        return personalBestReps;
+    }
+
+    public void setPersonalBestReps(Integer personalBestReps) {
+        this.personalBestReps = personalBestReps;
     }
 
     public Set<WorkoutSet> getSets() {

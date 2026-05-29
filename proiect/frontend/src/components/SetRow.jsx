@@ -1,6 +1,9 @@
 import React from 'react';
 
 function SetRow({ set, index, onUpdate, onRemove }) {
+  const kgPlaceholder = set.lastWeekWeight != null ? `${set.lastWeekWeight} kg` : 'kg';
+  const repsPlaceholder = set.lastWeekReps != null ? `${set.lastWeekReps} reps` : 'reps';
+
   return (
     <div className={`set-row ${set.completed ? 'completed' : ''}`}>
       <span className="set-number">{index + 1}</span>
@@ -8,7 +11,7 @@ function SetRow({ set, index, onUpdate, onRemove }) {
       <input 
         type="number" 
         className="set-input" 
-        placeholder="kg" 
+        placeholder={kgPlaceholder}
         value={set.weight}
         onChange={(e) => onUpdate(set.id, 'weight', e.target.value)}
         disabled={set.completed}
@@ -16,7 +19,7 @@ function SetRow({ set, index, onUpdate, onRemove }) {
       <input 
         type="number" 
         className="set-input" 
-        placeholder="reps" 
+        placeholder={repsPlaceholder}
         value={set.reps}
         onChange={(e) => onUpdate(set.id, 'reps', e.target.value)}
         disabled={set.completed}
